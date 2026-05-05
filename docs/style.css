@@ -1,0 +1,126 @@
+/* Color Palette & Variables */
+:root {
+    --bg-dark: #0a0a0c;
+    --bg-light: #ffffff;
+    --bg-gray: #121215;
+    --primary-blue: #0055ff;
+    --light-blue: #3388ff;
+    --text-light: #f4f4f5;
+    --text-dark: #1a1a1a;
+    --text-muted: #a1a1aa;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text-light);
+    line-height: 1.6;
+}
+
+/* Typography */
+h1 { font-size: 4rem; font-weight: 700; line-height: 1.1; margin-bottom: 1.5rem; letter-spacing: -1px; }
+h2 { font-size: 2.5rem; font-weight: 600; margin-bottom: 1rem; }
+h3 { font-size: 1.5rem; font-weight: 600; margin-bottom: 0.5rem; }
+p { font-size: 1.1rem; color: var(--text-muted); margin-bottom: 1rem; }
+.subtitle { font-size: 1.2rem; margin-bottom: 3rem; }
+
+/* Navigation */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 5%;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    background: rgba(10, 10, 12, 0.9);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+}
+.logo { font-size: 1.5rem; font-weight: 700; color: var(--text-light); }
+.nav-links a { color: var(--text-muted); text-decoration: none; margin-left: 2rem; font-weight: 500; transition: color 0.3s; }
+.nav-links a:hover { color: var(--text-light); }
+
+/* Buttons */
+.btn-primary, .btn-secondary, .btn-outline {
+    display: inline-block;
+    padding: 0.8rem 1.5rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+.btn-primary { background-color: var(--primary-blue); color: var(--bg-light); border: 1px solid var(--primary-blue); }
+.btn-primary:hover { background-color: var(--light-blue); border-color: var(--light-blue); }
+.btn-secondary { background-color: transparent; color: var(--text-light); border: 1px solid var(--text-muted); }
+.btn-secondary:hover { border-color: var(--text-light); }
+.nav-links .btn-outline { border: 1px solid var(--primary-blue); color: var(--primary-blue); padding: 0.5rem 1rem; }
+.nav-links .btn-outline:hover { background-color: var(--primary-blue); color: var(--bg-light); }
+
+/* Sections & Layout */
+.section { padding: 8rem 5%; }
+.container { max-width: 1200px; margin: 0 auto; }
+.row { display: flex; gap: 4rem; align-items: center; }
+.col { flex: 1; }
+.center-text { text-align: center; }
+
+/* Hero Section */
+.hero {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 0 5%;
+    background: radial-gradient(circle at top right, #002266, var(--bg-dark) 60%);
+}
+.hero-content { max-width: 800px; }
+.hero-buttons { margin-top: 2rem; display: flex; gap: 1rem; }
+
+/* Problem Section */
+.dark-section { background-color: var(--bg-gray); }
+.card {
+    background-color: var(--bg-dark);
+    padding: 3rem;
+    border-left: 4px solid var(--primary-blue);
+    border-radius: 8px;
+}
+.card ul { list-style: none; margin-top: 1.5rem; }
+.card li { margin-bottom: 1rem; color: var(--text-muted); }
+.card li strong { color: var(--text-light); }
+
+/* Architecture Section */
+.light-section { background-color: var(--bg-light); color: var(--text-dark); }
+.light-section p { color: #555; }
+.grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 3rem; }
+.feature-box {
+    padding: 2rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    transition: transform 0.3s;
+}
+.feature-box:hover { transform: translateY(-5px); }
+.icon { font-size: 2rem; font-weight: 700; color: var(--primary-blue); margin-bottom: 1rem; }
+
+/* Results Section */
+.blue-section { background-color: var(--primary-blue); color: var(--text-light); }
+.text-white { color: var(--text-light); }
+.metrics-grid { display: flex; justify-content: space-around; margin-top: 4rem; flex-wrap: wrap; gap: 2rem; }
+.metric { text-align: center; }
+.number { font-size: 4.5rem; font-weight: 700; line-height: 1; margin-bottom: 0.5rem; }
+.unit { font-size: 2rem; font-weight: 400; opacity: 0.8; }
+
+/* Footer */
+footer { padding: 3rem 5%; text-align: center; border-top: 1px solid #222; }
+footer p { font-size: 0.9rem; margin: 0; }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .row { flex-direction: column; }
+    h1 { font-size: 2.5rem; }
+    .hero-buttons { flex-direction: column; }
+}
