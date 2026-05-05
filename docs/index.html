@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AfriMesh | Infrastructure-Independent Classrooms</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">AfriMesh.</div>
+        <div class="nav-links">
+            <a href="#problem">The Problem</a>
+            <a href="#architecture">Architecture</a>
+            <a href="#results">Results</a>
+            <a href="https://github.com/burkifa23/afri_mesh" target="_blank" class="btn-outline">View GitHub</a>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-content">
+            <h1>Infrastructure-Independent Classrooms.</h1>
+            <p>A homegrown, Rust-based peer-to-peer protocol ensuring educational continuity in zero-infrastructure environments.</p>
+            <div class="hero-buttons">
+                <a href="#architecture" class="btn-primary">Explore the Tech</a>
+                <a href="https://github.com/burkifa23/afri_mesh" target="_blank" class="btn-secondary">Source Code</a>
+            </div>
+        </div>
+    </header>
+
+    <section id="problem" class="section dark-section">
+        <div class="container row">
+            <div class="col">
+                <h2>The Infrastructural Paradox</h2>
+                <p>Deploying cloud-dependent educational tools into environments lacking stable connectivity guarantees systemic failure. 75% of Sub-Saharan Africa remains digitally unconnected due to data taxation and infrastructure gaps.</p>
+            </div>
+            <div class="col card">
+                <h3>The Real-World Gap</h3>
+                <ul>
+                    <li><strong>Cloud Dependency:</strong> Western tools fail instantly without ISPs.</li>
+                    <li><strong>Enterprise Costs:</strong> Existing offline SDKs cost thousands in licensing.</li>
+                    <li><strong>Hardware Limits:</strong> Standard protocols crash budget $30 Android devices.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="architecture" class="section light-section">
+        <div class="container center-text">
+            <h2>The AfriMesh Architecture</h2>
+            <p class="subtitle">Turning the classroom into its own server using local data resilience.</p>
+            
+            <div class="grid-3">
+                <div class="feature-box">
+                    <div class="icon">01</div>
+                    <h3>Memory Safety in Rust</h3>
+                    <p>Built entirely in Rust. We prevent buffer overflows without garbage collection, ensuring stability on constrained Android hardware via a JNI bridge.</p>
+                </div>
+                <div class="feature-box">
+                    <div class="icon">02</div>
+                    <h3>Hybrid Transport</h3>
+                    <p>Bluetooth Low Energy (BLE) handles low-power node discovery, while Wi-Fi Direct dynamically triggers for high-speed, heavy payload data transfers.</p>
+                </div>
+                <div class="feature-box">
+                    <div class="icon">03</div>
+                    <h3>Offline Security & Routing</h3>
+                    <p>Features "Trust-on-First-Use" (TOFU) optical QR handshakes and Density-Aware Routing (CND-AODV) to prevent broadcast storms in crowded classrooms.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="results" class="section blue-section">
+        <div class="container">
+            <h2 class="center-text text-white">Proven Performance</h2>
+            <div class="metrics-grid">
+                <div class="metric">
+                    <h3 class="number">&lt;20<span class="unit">ms</span></h3>
+                    <p>Real-Time Latency</p>
+                </div>
+                <div class="metric">
+                    <h3 class="number">12-18<span class="unit">MB/s</span></h3>
+                    <p>Wi-Fi Direct Transfer Rates</p>
+                </div>
+                <div class="metric">
+                    <h3 class="number">95<span class="unit">%</span></h3>
+                    <p>Packet Delivery Success</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 AfriMesh Research Project. Ashesi University Undergraduate Research Conference.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
