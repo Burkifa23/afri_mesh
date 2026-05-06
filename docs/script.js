@@ -35,3 +35,25 @@ fadeElements.forEach(el => {
     el.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
     observer.observe(el);
 });
+
+
+// FAQ Accordion Logic
+document.querySelectorAll('.accordion-header').forEach(button => {
+    button.addEventListener('click', () => {
+        const content = button.nextElementSibling;
+
+        // Close others
+        document.querySelectorAll('.accordion-content').forEach(c => {
+            if (c !== content) c.style.maxHeight = null;
+        });
+
+        // Toggle current
+        if (content.style.maxHeight) {
+            content.style.maxHeight = null;
+            button.querySelector('.icon').innerText = '+';
+        } else {
+            content.style.maxHeight = content.scrollHeight + "px";
+            button.querySelector('.icon').innerText = '-';
+        }
+    });
+});

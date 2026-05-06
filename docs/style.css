@@ -124,3 +124,122 @@ footer p { font-size: 0.9rem; margin: 0; }
     h1 { font-size: 2.5rem; }
     .hero-buttons { flex-direction: column; }
 }
+
+/* --- Validation Section --- */
+.swiss-section {
+    padding: 80px 0;
+    border-bottom: 1px solid #333;
+}
+
+.dark-bg { background-color: #0a0a0a; color: white; }
+
+.section-title {
+    font-size: 3rem;
+    text-transform: uppercase;
+    font-weight: 900;
+    margin-bottom: 10px;
+    letter-spacing: -2px;
+}
+
+.test-card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 100px;
+    align-items: center;
+}
+
+.test-info h3 { font-size: 1.5rem; margin-bottom: 15px; border-left: 4px solid #fff; padding-left: 15px; }
+
+.status-pill {
+    display: inline-block;
+    padding: 8px 16px;
+    font-weight: bold;
+    border-radius: 4px;
+    margin-top: 20px;
+    background: #1a1a1a;
+}
+
+.pass { color: #00ff88; border: 1px solid #00ff88; }
+
+.test-visuals { display: flex; flex-direction: column; gap: 20px; }
+
+.image-box {
+    background: #111;
+    padding: 10px;
+    border: 1px solid #333;
+}
+
+.image-box span { font-size: 0.7rem; text-transform: uppercase; color: #888; display: block; margin-bottom: 5px; }
+
+.image-box img { width: 100%; border-radius: 2px; filter: grayscale(100%); transition: 0.3s; }
+
+.image-box img:hover { filter: grayscale(0%); }
+
+.fail-box { border-color: #ff444455; opacity: 0.6; }
+
+.fail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.limitations-box {
+    background: #1a1a1a;
+    padding: 40px;
+    border: 1px solid #333;
+    margin-top: 40px;
+}
+
+/* --- FAQ Accordion --- */
+.accordion { margin-top: 40px; }
+
+.accordion-header {
+    width: 100%;
+    padding: 25px;
+    background: none;
+    border: none;
+    border-bottom: 1px solid #333;
+    color: white;
+    text-align: left;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+}
+
+.accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+    padding: 0 25px;
+    color: #aaa;
+}
+
+.ref-list { list-style: none; padding: 0; color: #666; font-size: 0.9rem; }
+.ref-list li { margin-bottom: 10px; }
+
+.ref-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 40px;
+    margin-top: 30px;
+}
+
+.ref-category h4 {
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    color: #888;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #333;
+    padding-bottom: 5px;
+}
+
+.ref-list li {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    margin-bottom: 15px;
+    color: #ccc;
+}
+
+.ref-list em {
+    color: #fff;
+    font-style: italic;
+}
