@@ -1,9 +1,8 @@
+use edu_mesh::app::{App, InputMode};
+use edu_mesh::network;
+use edu_mesh::ui;
 
-mod app;
-mod network;
-mod ui;
 
-use app::{App, InputMode};
 use crossterm::{
     event::{self, DisableMouseCapture, EnableMouseCapture, Event, KeyCode, KeyEventKind},
     execute,
@@ -54,7 +53,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
             // Case 2: Network received something
             event = network.swarm.select_next_some() => {
                 match event {
-                    SwarmEvent::Behaviour(network::EduBehaviourEvent::Mdns(
+                    SwarmEvent::Behaviour(network::EduEvent::Mdns(
                         libp2p::mdns::Event::Discovered(list)
                     )) => {
                         for (peer_id, multiaddr) in list {
@@ -65,7 +64,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
                             }
                         }
                     },
-                    SwarmEvent::Behaviour(network::EduBehaviourEvent::Gossipsub(
+                    SwarmEvent::Behaviour(network::EduEvent::Gossipsub(
                         gossipsub::Event::Message { propagation_source: peer, message, .. }
                     )) => {
                         let text = String::from_utf8_lossy(&message.data);

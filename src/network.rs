@@ -1,25 +1,42 @@
+// src/network.rs
 use libp2p::{
-    gossipsub, mdns, noise, swarm::NetworkBehaviour, tcp, yamux, PeerId, Swarm,
+    gossipsub, mdns, noise, swarm::NetworkBehaviour, tcp, yamux, Swarm,
 };
-use std::{error::Error, time::Duration};
+use std::time::Duration;
+use crate::error::{AfriMeshError, AfriMeshResult}; // Use the renamed Result
 
-// --- 1. Define the "Behaviour" ---
 #[derive(NetworkBehaviour)]
+#[behaviour(out_event = "EduEvent")]
 pub struct EduBehaviour {
     pub gossipsub: gossipsub::Behaviour,
     pub mdns: mdns::tokio::Behaviour,
 }
 
-// --- 2. The Network Manager ---
+#[derive(Debug)]
+pub enum EduEvent {
+    Gossipsub(gossipsub::Event),
+    Mdns(mdns::Event), // Fixed path
+}
+
+impl From<gossipsub::Event> for EduEvent {
+    fn from(event: gossipsub::Event) -> Self {
+        EduEvent::Gossipsub(event)
+    }
+}
+
+impl From<mdns::Event> for EduEvent {
+    fn from(event: mdns::Event) -> Self {
+        EduEvent::Mdns(event)
+    }
+}
+
 pub struct Network {
     pub swarm: Swarm<EduBehaviour>,
 }
 
 impl Network {
-    pub async fn new() -> Result<Self, Box<dyn Error>> {
+    pub async fn new() -> AfriMeshResult<Self> {
         let id_keys = libp2p::identity::Keypair::generate_ed25519();
-        let peer_id = PeerId::from(id_keys.public());
-        // REMOVED println! - The UI header will show this instead.
 
         let swarm = libp2p::SwarmBuilder::with_existing_identity(id_keys)
             .with_tokio()
@@ -27,7 +44,8 @@ impl Network {
                 tcp::Config::default(),
                 noise::Config::new,
                 yamux::Config::default,
-            )?
+            )
+            .map_err(|e| AfriMeshError::Io(std::io::Error::new(std::io::ErrorKind::Other, e)))?
             .with_behaviour(|key| {
                 let gossip_config = gossipsub::ConfigBuilder::default()
                     .heartbeat_interval(Duration::from_secs(1))
@@ -38,7 +56,7 @@ impl Network {
                 let gossipsub = gossipsub::Behaviour::new(
                     gossipsub::MessageAuthenticity::Signed(key.clone()),
                     gossip_config,
-                )?;
+                ).map_err(|msg| std::io::Error::new(std::io::ErrorKind::Other, msg))?;
 
                 let mdns = mdns::tokio::Behaviour::new(
                     mdns::Config::default(),
@@ -46,27 +64,26 @@ impl Network {
                 )?;
 
                 Ok(EduBehaviour { gossipsub, mdns })
-            })?
+            })
+            .map_err(|e| AfriMeshError::Io(std::io::Error::new(std::io::ErrorKind::Other, e)))?
             .with_swarm_config(|c| c.with_idle_connection_timeout(Duration::from_secs(60)))
             .build();
 
         Ok(Self { swarm })
     }
 
-    pub fn subscribe(&mut self, topic_name: &str) {
+    pub fn subscribe(&mut self, topic_name: &str) -> AfriMeshResult<bool> {
         let topic = gossipsub::IdentTopic::new(topic_name);
-        // CHANGED: We silently ignore errors to keep the TUI clean.
-        // In a real app, you would send this error to a log file.
-        let _ = self.swarm.behaviour_mut().gossipsub.subscribe(&topic);
+        self.swarm.behaviour_mut().gossipsub.subscribe(&topic)
+            .map_err(AfriMeshError::SubscribeFailed)
     }
 
-    pub fn publish(&mut self, topic_name: &str, message: String) {
+    pub fn publish(&mut self, topic_name: &str, message: String) -> AfriMeshResult<gossipsub::MessageId> {
         let topic = gossipsub::IdentTopic::new(topic_name);
-        // CHANGED: Silently ignore errors.
-        let _ = self
-            .swarm
+        self.swarm
             .behaviour_mut()
             .gossipsub
-            .publish(topic, message.as_bytes());
+            .publish(topic, message.as_bytes())
+            .map_err(AfriMeshError::PublishFailed)
     }
 }
