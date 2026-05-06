@@ -48,6 +48,7 @@ impl Network {
             .map_err(|e| AfriMeshError::Io(std::io::Error::new(std::io::ErrorKind::Other, e)))?
             .with_behaviour(|key| {
                 let gossip_config = gossipsub::ConfigBuilder::default()
+                    .max_transmit_size(25*1024*1024)
                     .heartbeat_interval(Duration::from_secs(1))
                     .validation_mode(gossipsub::ValidationMode::Strict)
                     .build()
