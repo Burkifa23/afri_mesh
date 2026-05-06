@@ -1,10 +1,10 @@
-use edu_mesh::app::{App, InputMode};
-use edu_mesh::network;
-use edu_mesh::ui;
-
+// src/main.rs
+use afri_mesh::app::{App, InputMode};
+use afri_mesh::network;
+use afri_mesh::ui;
 
 use crossterm::{
-    event::{self, DisableMouseCapture, EnableMouseCapture, Event, KeyCode, KeyEventKind},
+    event::{self, Event, KeyCode, KeyEventKind},
     execute,
     terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
 };
@@ -18,11 +18,10 @@ use tokio::{sync::mpsc, time::Duration};
 async fn main() -> Result<(), Box<dyn Error>> {
     // 1. Setup Network
     let mut network = network::Network::new().await?;
-    network.subscribe("classroom-chat"); // Listen to this channel
-    network.swarm.listen_on("/ip4/0.0.0.0/tcp/0".parse()?)?; // Listen on any port
+    network.swarm.listen_on("/ip4/0.0.0.0/tcp/0".parse()?)?;
 
     // 2. Setup Channels (The phone lines between UI and Network)
-    let (tx, mut rx) = mpsc::unbounded_channel::<String>(); // UI -> Network
+    let (tx, mut rx) = mpsc::unbounded_channel::<String>();
 
     // 3. Setup Terminal
     enable_raw_mode()?;
@@ -35,22 +34,25 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let my_id = network.swarm.local_peer_id().to_string();
     let mut app = App::new(my_id.clone(), tx.clone());
 
-    // 5. The Main Loop (The Heartbeat)
+    // --- FIX 1: Handle Subscribe Result after App is created ---
+    if let Err(e) = network.subscribe("classroom-chat") {
+        app.messages.push(format!("SYSTEM ERROR: Failed to join channel: {}", e));
+    }
+
+    // 5. The Main Loop
     let tick_rate = Duration::from_millis(100);
-    let mut last_tick = tokio::time::Instant::now();
 
     loop {
-        // A. Draw UI
         terminal.draw(|f| ui::ui(f, &app))?;
 
-        // B. Handle Network Events (Non-blocking)
         tokio::select! {
-            // Case 1: UI wants to send a message
+            // --- FIX 2: Corrected rx.recv() location and syntax ---
             Some(msg) = rx.recv() => {
-                network.publish("classroom-chat", msg);
+                if let Err(e) = network.publish("classroom-chat", msg) {
+                    app.messages.push(format!("SYSTEM ERROR: Message failed to send: {}", e));
+                }
             }
 
-            // Case 2: Network received something
             event = network.swarm.select_next_some() => {
                 match event {
                     SwarmEvent::Behaviour(network::EduEvent::Mdns(
@@ -74,7 +76,6 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 }
             }
 
-            // Case 3: Handle Keyboard Input
             _ = tokio::time::sleep(tick_rate) => {
                  if event::poll(Duration::from_millis(0))? {
                     if let Event::Key(key) = event::read()? {
@@ -89,10 +90,14 @@ async fn main() -> Result<(), Box<dyn Error>> {
                             },
                             InputMode::Editing => match key.code {
                                 KeyCode::Enter => {
-                                    // Send message to channel
                                     let msg = app.input_buffer.clone();
                                     app.messages.push(format!("Me: {}", msg));
-                                    app.tx.send(msg).unwrap(); // Send to network thread
+
+                                    // --- FIX 3: Safe channel sending ---
+                                    if let Err(_) = app.tx.send(msg) {
+                                        app.messages.push("SYSTEM ERROR: Network thread disconnected.".to_string());
+                                    }
+
                                     app.input_buffer.clear();
                                     app.input_mode = InputMode::Normal;
                                 }
@@ -112,13 +117,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
         }
     }
 
-    // Cleanup
     disable_raw_mode()?;
-    execute!(
-        terminal.backend_mut(),
-        LeaveAlternateScreen
-
-    )?;
+    execute!(terminal.backend_mut(), LeaveAlternateScreen)?;
     terminal.show_cursor()?;
 
     Ok(())
